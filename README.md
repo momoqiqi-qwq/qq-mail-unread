@@ -1,12 +1,6 @@
 # QQ 邮箱多账号未读提醒 v3.1
 
 > 本地 IMAP 轮询 + Chrome 扩展，多账号 QQ 邮箱未读监控，验证码快速复制，不经过第三方服务器。
-
-<p align="center">
-  <img src="picture/extension-popup.jpg" alt="Chrome 扩展弹窗界面" width="380">
-  <img src="picture/backend-admin.jpg" alt="后端管理后台界面" width="380">
-</p>
-
 ## 项目架构
 
 | 模块 | 路径 | 说明 |
