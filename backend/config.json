@@ -1,0 +1,14 @@
+{
+  "pollIntervalSeconds": 600,
+  "httpHost": "127.0.0.1",
+  "httpPort": 8765,
+  "requestTimeoutMs": 20000,
+  "verboseLog": false,
+  "allowedExtensionOrigins": [],
+  "maxRecentMails": 20,
+  "includeBodyPreview": true,
+  "bodyPreviewRatio": 0.6,
+  "maxBodyPreviewChars": 3000,
+  "maxConsecutiveFailures": 15,
+  "pollingEnabled": true
+}

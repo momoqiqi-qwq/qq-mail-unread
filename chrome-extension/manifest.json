@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "QQ邮箱多账号未读提醒",
+  "version": "3.1.0",
+  "description": "从本地 IMAP 后端读取多个 QQ 邮箱账号未读数量，支持账号测试、账号导入导出、旧验证码清理、后端托盘、账号级正文读取、本地忽略、日志页面、验证码高准确率识别、服务器标为已读、默认大界面、字体大小调节、多主题界面、全局暂停轮询、搜索筛选、批量操作、后端主题和后端工具箱，并修复 Popup 空白、按钮无反应和后台消息失败兜底。",
+  "permissions": [
+    "storage",
+    "alarms",
+    "notifications"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8765/*"
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "QQ邮箱未读提醒",
+    "default_popup": "popup/popup.html"
+  },
+  "options_page": "options/options.html",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

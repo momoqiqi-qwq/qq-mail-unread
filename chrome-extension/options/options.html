@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QQ邮箱未读提醒 - 设置与说明</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div>
+        <h1>QQ邮箱多账号未读提醒 v2.2</h1>
+        <p>本扩展只负责展示，本地 Node.js 后端负责通过 QQ 邮箱 IMAP 查询未读数。</p>
+      </div>
+      <div class="hero-buttons"><button id="checkBtn" type="button">检查后端状态</button><button id="backendAdminBtn" type="button">打开后端设置 GUI</button></div>
+    </header>
+
+    <section class="card">
+      <h2>后端状态</h2>
+      <div id="healthBox" class="health-box">等待检查...</div>
+    </section>
+
+    <section class="card grid-card">
+      <div>
+        <h2>扩展设置</h2>
+        <label class="setting-row">
+          <input id="privacyMode" type="checkbox" />
+          <span>默认开启隐私模式：隐藏发件人和主题</span>
+        </label>
+        <label class="setting-row">
+          <input id="notificationsEnabled" type="checkbox" />
+          <span>启用新邮件桌面通知</span>
+        </label>
+        <label class="setting-row indent">
+          <input id="notificationShowSubjects" type="checkbox" />
+          <span>通知中显示发件人和主题</span>
+        </label>
+        <label class="setting-row">
+          <input id="collapseZeroUnread" type="checkbox" />
+          <span>默认折叠无未读账号</span>
+        </label>
+        <label class="setting-row">
+          <input id="showBodyPreview" type="checkbox" />
+          <span>显示正文预览</span>
+        </label>
+        <label class="setting-row">
+          <input id="compactMode" type="checkbox" />
+          <span>使用紧凑界面排布</span>
+        </label>
+        <label class="setting-row">
+          <span>界面字体大小</span>
+          <select id="fontSize">
+            <option value="small">小</option>
+            <option value="medium">标准</option>
+            <option value="large">大</option>
+            <option value="xlarge">特大</option>
+          </select>
+        </label>
+        <label class="setting-row">
+          <span>界面主题</span>
+          <select id="theme">
+            <option value="default">默认蓝</option>
+            <option value="claude-light">Claude浅色</option>
+            <option value="claude-dark">Claude深色</option>
+            <option value="midnight-blue">午夜蓝</option>
+            <option value="graphite-black">石墨黑</option>
+            <option value="glass-blue">玻璃蓝</option>
+            <option value="paper-cream">纸张奶油</option>
+            <option value="amethyst">紫晶</option>
+            <option value="win11">Win11</option>
+            <option value="sunset-orange">日落橙</option>
+            <option value="mint-light">薄荷浅色</option>
+          </select>
+        </label>
+        <label class="setting-row">
+          <span>正文显示比例</span>
+          <select id="bodyPreviewPercent">
+            <option value="10">10%</option>
+            <option value="20">20%</option>
+            <option value="30">30%</option>
+            <option value="40">40%</option>
+            <option value="50">50%</option>
+            <option value="60">60%</option>
+            <option value="70">70%</option>
+            <option value="80">80%</option>
+            <option value="90">90%</option>
+            <option value="100">100%</option>
+          </select>
+        </label>
+        <label class="setting-row">
+          <span>正文预览高度</span>
+          <select id="bodyPreviewMode">
+            <option value="compact">较短</option>
+            <option value="normal">标准</option>
+            <option value="full">更多</option>
+          </select>
+        </label>
+        <label class="setting-row">
+          <span>默认打开 QQ 邮箱方式</span>
+          <select id="openQqMailMode">
+            <option value="smallWindow">官方</option>
+            <option value="tab">新标签</option>
+          </select>
+        </label>
+        <label class="setting-row">
+          <span>弹窗/面板宽度</span>
+          <select id="popupWidth">
+            <option value="360">360 px</option>
+            <option value="392">392 px</option>
+            <option value="460">460 px</option>
+            <option value="540">540 px</option>
+            <option value="620">620 px</option>
+            <option value="760">760 px</option>
+          </select>
+        </label>
+        <label class="setting-row">
+          <span>弹窗/面板高度</span>
+          <select id="popupHeight">
+            <option value="520">520 px</option>
+            <option value="620">620 px</option>
+            <option value="720">720 px</option>
+            <option value="820">820 px</option>
+          </select>
+        </label>
+        <label class="setting-row">
+          <span>最近邮件显示数量</span>
+          <select id="displayMailCount">
+            <option value="5">5 封</option>
+            <option value="10">10 封</option>
+            <option value="20">20 封</option>
+            <option value="50">50 封</option>
+          </select>
+        </label>
+        <label class="setting-row">
+          <span>邮件时间排序</span>
+          <select id="mailSortOrder">
+            <option value="desc">最新在前</option>
+            <option value="asc">最旧在前</option>
+          </select>
+        </label>
+        <label class="setting-row">
+          <span>默认邮件筛选</span>
+          <select id="mailFilter">
+            <option value="all">全部未读邮件</option>
+            <option value="codes">验证码/激活码/登录码/邀请码</option>
+          </select>
+        </label>
+      </div>
+      <div class="tip">
+        <strong>隐私建议</strong>
+        <p>如果经常投屏或在公共场合使用，建议开启隐私模式，并关闭“通知中显示发件人和主题”。v2.2 支持更准确的验证码识别、界面直接标为已读、默认特大字体/最大弹窗、11 套主题、账号测试、账号导入导出、一键清理旧验证码和 Windows 托盘模式。经常投屏或在公共场合使用时，建议关闭“显示正文预览”，并开启隐私模式。</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>如何启动本地后端</h2>
+      <p>进入完整项目包的 <code>backend</code> 目录，运行：</p>
+      <pre><code>npm install
+npm start</code></pre>
+      <button id="copyCmdBtn" type="button">复制启动命令</button>
+      <button id="openAdminBtn" type="button">打开后端设置 GUI</button>
+    </section>
+
+    <section class="card">
+      <h2>如何配置 QQ 邮箱授权码</h2>
+      <ol>
+        <li>登录 QQ 邮箱网页版。</li>
+        <li>进入“设置 / 账号与安全”，找到 POP3/IMAP/SMTP 服务。</li>
+        <li>开启 IMAP/SMTP 服务。</li>
+        <li>按页面提示生成 16 位授权码。</li>
+        <li>打开 <code>http://127.0.0.1:8765/admin/</code> 的“账号管理”，新增账号并填写授权码。</li>
+        <li>重启后端。</li>
+      </ol>
+      <p class="warning">注意：<code>authCode</code> 是 QQ 邮箱 IMAP/SMTP 服务授权码，不是 QQ 登录密码。</p>
+    </section>
+
+    <section class="card">
+      <h2>安全与隐私</h2>
+      <ul>
+        <li>后端只监听 <code>127.0.0.1</code>，不会对公网开放。</li>
+        <li>扩展只访问 <code>http://127.0.0.1:8765/*</code>。</li>
+        <li>v2.2 可调节扩展弹窗尺寸、字体大小和主题，并可打开独立面板窗口；独立面板可直接拖拽窗口边缘调整大小。</li>
+        <li>v2.2 可在扩展设置和后端设置 GUI 中调节正文预览比例；账号导出文件会包含授权码，请妥善保管。</li>
+        <li>QQ 授权码只保存在本机 <code>accounts.json</code>。</li>
+        <li>连续轮询失败达到后端配置的 <code>maxConsecutiveFailures</code>（默认 15 次）后，该账号会自动停止轮询；修复后可在后端 GUI 重置。</li>
+        <li>“一键清理旧验证码”只做本地忽略，不会把 QQ 邮箱服务器上的邮件标为已读；Popup 中的“标为已读”会真正修改服务器状态。</li>
+      </ul>
+    </section>
+  </main>
+
+  <script type="module" src="options.js"></script>
+</body>
+</html>

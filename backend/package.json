@@ -1,0 +1,59 @@
+{
+  "name": "qq-mail-unread-local-backend",
+  "version": "3.1.0",
+  "description": "QQ 邮箱多账号未读提醒本地后端，仅监听 127.0.0.1。",
+  "main": "server.js",
+  "bin": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "tray": "electron tray-main.js",
+    "check": "node --check server.js && node --check tray-main.js && find src -name '*.js' -print0 | xargs -0 -n1 node --check",
+    "build:win": "pkg . --targets node18-win-x64 --output dist/QQ邮箱提醒后端.exe",
+    "build:tray": "electron-builder --win portable --x64"
+  },
+  "pkg": {
+    "assets": [
+      "admin/**/*",
+      "accounts.example.json",
+      "config.json",
+      "package.json",
+      "tray-icon.png"
+    ],
+    "scripts": [
+      "src/**/*.js"
+    ]
+  },
+  "build": {
+    "appId": "local.qq-mail-unread.tray",
+    "productName": "QQ邮箱提醒后端",
+    "files": [
+      "tray-main.js",
+      "server.js",
+      "src/**/*",
+      "admin/**/*",
+      "accounts.example.json",
+      "config.json",
+      "package.json",
+      "tray-icon.png"
+    ],
+    "extraResources": [],
+    "win": {
+      "target": ["portable"],
+      "artifactName": "QQ邮箱提醒托盘版-${version}.${ext}"
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "imapflow": "^1.0.164",
+    "mailparser": "^3.7.2"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3",
+    "pkg": "^5.8.1"
+  }
+}

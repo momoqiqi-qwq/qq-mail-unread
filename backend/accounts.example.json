@@ -1,0 +1,16 @@
+[
+  {
+    "id": "work",
+    "email": "xxx@qq.com",
+    "authCode": "这里填写QQ邮箱IMAP授权码不是QQ密码",
+    "nickname": "工作号",
+    "includeBodyPreview": true
+  },
+  {
+    "id": "personal",
+    "email": "yyy@qq.com",
+    "authCode": "这里填写QQ邮箱IMAP授权码不是QQ密码",
+    "nickname": "个人号",
+    "includeBodyPreview": false
+  }
+]

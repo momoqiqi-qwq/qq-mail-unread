@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QQ邮箱未读提醒</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="title-wrap">
+        <h1>QQ邮箱提醒</h1>
+        <p id="lastUpdated" class="subtle">等待同步</p>
+      </div>
+      <div class="header-actions">
+        <button id="panelWindowBtn" class="icon-btn" type="button" title="打开可调整大小的独立面板">面板</button>
+        <button id="smallWindowBtn" class="icon-btn" type="button" title="官方打开 QQ 邮箱">官方</button>
+        <button id="settingsBtn" class="icon-btn" type="button" title="更多设置">设置</button>
+        <button id="backendSettingsBtn" class="icon-btn" type="button" title="打开后端设置 GUI">后台</button>
+        <button id="pauseBtn" class="icon-btn" type="button" title="暂停/恢复后台 IMAP 轮询">暂停</button>
+        <button id="refreshBtn" class="primary-btn" type="button">刷新</button>
+      </div>
+    </header>
+
+    <section id="summary" class="summary"></section>
+
+    <section class="quick-tools">
+      <input id="searchInput" class="search-input" type="search" placeholder="搜索发件人/主题/正文" />
+      <select id="accountViewSelect" class="quick-select" title="账号视图">
+        <option value="all">全部账号</option>
+        <option value="unread">仅有未读</option>
+        <option value="problem">异常/停止</option>
+        <option value="ok">正常账号</option>
+      </select>
+      <select id="timeRangeSelect" class="quick-select" title="时间范围">
+        <option value="all">全部时间</option>
+        <option value="1h">最近1小时</option>
+        <option value="6h">最近6小时</option>
+        <option value="24h">最近24小时</option>
+        <option value="7d">最近7天</option>
+      </select>
+      <button id="copyVisibleCodesBtn" class="text-btn quick-action" type="button">复制可见验证码</button>
+      <button id="ignoreVisibleBtn" class="text-btn quick-action" type="button">忽略可见邮件</button>
+    </section>
+
+    <section id="settingsPanel" class="settings-panel" hidden>
+      <div class="settings-head">
+        <strong>更多设置</strong>
+        <span>设置会保存在浏览器本地</span>
+      </div>
+      <div class="settings-grid">
+        <label class="setting-item switch-row">
+          <input id="privacyToggle" type="checkbox" />
+          <span>隐私模式</span>
+        </label>
+        <label class="setting-item switch-row">
+          <input id="notifyToggle" type="checkbox" />
+          <span>新邮件通知</span>
+        </label>
+        <label class="setting-item switch-row">
+          <input id="notifySubjectToggle" type="checkbox" />
+          <span>通知显示主题</span>
+        </label>
+        <label class="setting-item switch-row">
+          <input id="bodyPreviewToggle" type="checkbox" />
+          <span>正文预览</span>
+        </label>
+        <label class="setting-item switch-row">
+          <input id="collapseZeroToggle" type="checkbox" />
+          <span>折叠无未读账号</span>
+        </label>
+        <label class="setting-item switch-row">
+          <input id="reuseWindowToggle" type="checkbox" />
+          <span>复用QQ邮箱官方窗口</span>
+        </label>
+        <label class="setting-item select-row">
+          <span>密度</span>
+          <select id="densitySelect">
+            <option value="compact">紧凑</option>
+            <option value="comfortable">舒适</option>
+          </select>
+        </label>
+        <label class="setting-item select-row">
+          <span>字体</span>
+          <select id="fontSizeSelect">
+            <option value="small">小</option>
+            <option value="medium">标准</option>
+            <option value="large">大</option>
+            <option value="xlarge">特大</option>
+          </select>
+        </label>
+        <label class="setting-item select-row theme-row">
+          <span>主题</span>
+          <select id="themeSelect">
+            <option value="default">默认蓝</option>
+            <option value="claude-light">Claude浅色</option>
+            <option value="claude-dark">Claude深色</option>
+            <option value="midnight-blue">午夜蓝</option>
+            <option value="graphite-black">石墨黑</option>
+            <option value="glass-blue">玻璃蓝</option>
+            <option value="paper-cream">纸张奶油</option>
+            <option value="amethyst">紫晶</option>
+            <option value="win11">Win11</option>
+            <option value="sunset-orange">日落橙</option>
+            <option value="mint-light">薄荷浅色</option>
+          </select>
+        </label>
+        <label class="setting-item select-row">
+          <span>显示</span>
+          <select id="displayCountSelect">
+            <option value="5">5封</option>
+            <option value="10">10封</option>
+            <option value="20">20封</option>
+            <option value="50">50封</option>
+          </select>
+        </label>
+        <label class="setting-item select-row">
+          <span>筛选</span>
+          <select id="mailFilterSelect">
+            <option value="all">全部</option>
+            <option value="codes">验证码/激活码</option>
+          </select>
+        </label>
+        <label class="setting-item select-row">
+          <span>排序</span>
+          <select id="sortOrderSelect">
+            <option value="desc">最新在前</option>
+            <option value="asc">最旧在前</option>
+          </select>
+        </label>
+        <label class="setting-item select-row">
+          <span>正文比例</span>
+          <select id="bodyPreviewPercentSelect">
+            <option value="10">10%</option>
+            <option value="20">20%</option>
+            <option value="30">30%</option>
+            <option value="40">40%</option>
+            <option value="50">50%</option>
+            <option value="60">60%</option>
+            <option value="70">70%</option>
+            <option value="80">80%</option>
+            <option value="90">90%</option>
+            <option value="100">100%</option>
+          </select>
+        </label>
+        <label class="setting-item select-row">
+          <span>正文高度</span>
+          <select id="bodyPreviewModeSelect">
+            <option value="compact">较短</option>
+            <option value="normal">标准</option>
+            <option value="full">更多</option>
+          </select>
+        </label>
+        <label class="setting-item select-row">
+          <span>分界线粗细</span>
+          <select id="dividerThicknessSelect">
+            <option value="0">无</option>
+            <option value="1">1px</option>
+            <option value="2">2px</option>
+            <option value="3">3px</option>
+            <option value="4">4px</option>
+            <option value="6">6px</option>
+            <option value="8">8px</option>
+          </select>
+        </label>
+        <label class="setting-item select-row">
+          <span>分界线样式</span>
+          <select id="dividerStyleSelect">
+            <option value="solid">实线</option>
+            <option value="dashed">虚线</option>
+            <option value="dotted">点线</option>
+            <option value="double">双线</option>
+            <option value="gradient">渐变线</option>
+            <option value="shadow">阴影分隔</option>
+            <option value="glow">发光线</option>
+            <option value="soft-card">卡片间隔</option>
+            <option value="left-accent">左侧强调</option>
+            <option value="stamp">邮票齿孔</option>
+          </select>
+        </label>
+        <label class="setting-item select-row">
+          <span>打开方式</span>
+          <select id="openModeSelect">
+            <option value="smallWindow">官方</option>
+            <option value="tab">新标签</option>
+          </select>
+        </label>
+        <label class="setting-item select-row">
+          <span>弹窗宽度</span>
+          <select id="popupWidthSelect">
+            <option value="360">360</option>
+            <option value="392">392</option>
+            <option value="460">460</option>
+            <option value="540">540</option>
+            <option value="620">620</option>
+            <option value="760">760</option>
+          </select>
+        </label>
+        <label class="setting-item select-row">
+          <span>弹窗高度</span>
+          <select id="popupHeightSelect">
+            <option value="520">520</option>
+            <option value="620">620</option>
+            <option value="720">720</option>
+            <option value="820">820</option>
+          </select>
+        </label>
+      </div>
+      <div class="settings-actions">
+        <button id="copyStartCmdBtn" class="text-btn" type="button">复制启动命令</button>
+        <button id="cleanOldCodesBtn" class="text-btn" type="button">清理24h前验证码</button>
+        <button id="openBackendSettingsBtn" class="text-btn" type="button">打开后端设置</button>
+        <button id="diagnosticsBtn" class="text-btn" type="button">复制自检报告</button>
+        <button id="optionsBtn" class="text-btn" type="button">完整说明页</button>
+      </div>
+    </section>
+
+    <main id="content" class="content"></main>
+
+    <footer class="footer">
+      账号与授权码在后端 <code>accounts.json</code> 配置。可在“设置”里调节字体、主题、弹窗大小和正文比例；“后台”可打开本地后端设置 GUI；可自定义邮件分界线。
+    </footer>
+    <div id="toast" class="toast" hidden></div>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

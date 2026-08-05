@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QQ邮箱提醒 - 后端管理</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div>
+        <h1>QQ邮箱提醒 · 后端管理</h1>
+        <p>本页面只由本机 <code>127.0.0.1</code> 提供，用于管理账号、轮询、正文预览、本地忽略、运行日志和 Windows 托盘程序。</p>
+      </div>
+      <div class="hero-actions">
+        <label class="mini-field">主题
+          <select id="adminTheme">
+            <option value="default-blue">默认蓝</option>
+            <option value="claude-light">Claude浅色</option>
+            <option value="claude-dark">Claude深色</option>
+            <option value="midnight-blue">午夜蓝</option>
+            <option value="graphite-black">石墨黑</option>
+            <option value="glass-blue">玻璃蓝</option>
+            <option value="paper-cream">纸张奶油</option>
+            <option value="amethyst">紫晶</option>
+            <option value="win11">Win11</option>
+            <option value="sunset-orange">日落橙</option>
+            <option value="mint-light">薄荷浅色</option>
+          </select>
+        </label>
+        <label class="mini-field">字体
+          <select id="adminFontSize">
+            <option value="small">小</option>
+            <option value="normal">标准</option>
+            <option value="large">大</option>
+            <option value="xlarge">特大</option>
+          </select>
+        </label>
+        <label class="mini-field">密度
+          <select id="adminDensity">
+            <option value="compact">紧凑</option>
+            <option value="normal">标准</option>
+            <option value="comfortable">舒适</option>
+          </select>
+        </label>
+        <button id="refreshBtn" type="button">刷新状态</button>
+        <button id="saveBtn" class="primary" type="button">保存设置</button>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="settings" type="button">后台设置</button>
+      <button class="tab" data-tab="accounts" type="button">账号管理</button>
+      <button class="tab" data-tab="ignored" type="button">本地忽略</button>
+      <button class="tab" data-tab="logs" type="button">运行日志</button>
+      <button class="tab" data-tab="tray" type="button">Windows 托盘</button>
+      <button class="tab" data-tab="tools" type="button">工具箱</button>
+    </nav>
+
+    <section class="card">
+      <h2>运行状态</h2>
+      <div id="healthSummary" class="health-summary"></div>
+      <pre id="healthBox" class="health-box">正在读取...</pre>
+    </section>
+
+    <section id="tab-settings" class="tab-page active">
+      <section class="card grid-card">
+        <div class="form-block">
+          <h2>轮询设置</h2>
+          <label class="switch-row">
+            <input id="pollingEnabled" type="checkbox" />
+            <span>启用后台 IMAP 轮询</span>
+          </label>
+          <label class="field">
+            <span>轮询间隔：<b id="pollIntervalLabel">60</b> 秒</span>
+            <input id="pollIntervalSeconds" type="range" min="10" max="600" step="10" />
+            <small>关闭后后端仍可打开管理页和显示缓存，但不会继续连接 QQ IMAP。</small>
+          </label>
+          <label class="field">
+            <span>请求超时：<b id="timeoutLabel">20000</b> ms</span>
+            <input id="requestTimeoutMs" type="range" min="5000" max="120000" step="5000" />
+          </label>
+          <label class="field">
+            <span>每个账号缓存最近未读邮件：<b id="maxRecentLabel">20</b> 封</span>
+            <input id="maxRecentMails" type="range" min="5" max="100" step="5" />
+          </label>
+        </div>
+
+        <div class="form-block">
+          <h2>正文预览</h2>
+          <label class="switch-row">
+            <input id="includeBodyPreview" type="checkbox" />
+            <span>默认读取正文预览</span>
+          </label>
+          <label class="field">
+            <span>正文预览比例：<b id="bodyPercentLabel">60</b>%</span>
+            <input id="bodyPreviewPercent" type="range" min="5" max="100" step="5" />
+            <small>账号管理里可以单独覆盖：例如工作号读取正文，个人号只读标题。</small>
+          </label>
+          <label class="field">
+            <span>单封正文最多缓存：<b id="maxBodyCharsLabel">3000</b> 字</span>
+            <input id="maxBodyPreviewChars" type="range" min="200" max="20000" step="200" />
+          </label>
+        </div>
+
+        <div class="form-block">
+          <h2>错误保护</h2>
+          <label class="field">
+            <span>连续失败停止阈值：<b id="failureLabel">15</b> 次</span>
+            <input id="maxConsecutiveFailures" type="range" min="1" max="100" step="1" />
+          </label>
+          <label class="switch-row">
+            <input id="verboseLog" type="checkbox" />
+            <span>输出详细日志</span>
+          </label>
+          <div class="button-row">
+            <button id="resetStoppedBtn" type="button">重置已停止账号</button>
+            <button id="refreshBackendBtn" type="button">立即轮询一次</button>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section id="tab-accounts" class="tab-page">
+      <section class="card">
+        <div class="section-title-row">
+          <h2>账号管理</h2>
+          <div class="button-row compact-row">
+            <button id="addAccountBtn" type="button">新增账号</button>
+            <button id="testAllAccountsBtn" type="button">测试全部</button>
+            <button id="exportAccountsBtn" type="button">导出账号</button>
+            <button id="importAccountsBtn" type="button">导入账号</button>
+            <button id="saveAccountsBtn" class="primary" type="button">保存账号并重载</button>
+          </div>
+        </div>
+        <input id="importAccountsInput" type="file" accept="application/json,.json" hidden />
+        <p class="hint warning-hint">授权码是 QQ 邮箱 IMAP/SMTP 服务授权码，不是 QQ 登录密码。导出的账号文件会包含授权码，只能保存在自己的可信设备上。</p>
+        <div id="accountList" class="account-list"></div>
+      </section>
+    </section>
+
+    <section id="tab-ignored" class="tab-page">
+      <section class="card">
+        <div class="section-title-row">
+          <h2>一键清理旧验证码</h2>
+          <div class="button-row compact-row">
+            <label class="inline-field">超过
+              <select id="cleanOldHoursSelect">
+                <option value="1">1 小时</option>
+                <option value="3">3 小时</option>
+                <option value="6">6 小时</option>
+                <option value="12">12 小时</option>
+                <option value="24" selected>24 小时</option>
+                <option value="72">3 天</option>
+                <option value="168">7 天</option>
+                <option value="720">30 天</option>
+              </select>
+            </label>
+            <button id="cleanOldCodesBtn" class="primary" type="button">清理旧验证码</button>
+          </div>
+        </div>
+        <p class="hint">会把当前缓存中超过指定时间、且命中验证码/激活码/登录码/邀请码特征的未读邮件加入“本地忽略”。不会把 QQ 邮箱服务器邮件标为已读。</p>
+      </section>
+
+      <section class="card">
+        <div class="section-title-row">
+          <h2>本地忽略记录</h2>
+          <div class="button-row compact-row">
+            <button id="reloadIgnoredBtn" type="button">刷新</button>
+            <button id="clearIgnoredBtn" class="danger" type="button">清空全部忽略</button>
+          </div>
+        </div>
+        <p class="hint">“本地忽略”只是在本工具里隐藏旧邮件，不会改动真实邮箱状态。</p>
+        <div id="ignoredList" class="simple-list">正在读取...</div>
+      </section>
+    </section>
+
+    <section id="tab-logs" class="tab-page">
+      <section class="card">
+        <div class="section-title-row">
+          <h2>最近日志</h2>
+          <div class="button-row compact-row">
+            <select id="logLevelSelect">
+              <option value="all">全部</option>
+              <option value="error">错误</option>
+              <option value="warn">警告</option>
+              <option value="info">信息</option>
+            </select>
+            <button id="reloadLogsBtn" type="button">刷新日志</button>
+            <button id="clearLogsBtn" class="danger" type="button">清空日志</button>
+          </div>
+        </div>
+        <div id="logsList" class="log-list">正在读取...</div>
+      </section>
+    </section>
+
+    <section id="tab-tools" class="tab-page">
+      <section class="card">
+        <div class="section-title-row">
+          <h2>后端工具箱</h2>
+          <div class="button-row compact-row">
+            <button id="quickRepairBtn" class="primary" type="button">一键修复并轮询</button>
+            <button id="copyDiagnosticsBtn" type="button">复制自检报告</button>
+            <button id="openStatusBtn" type="button">打开状态接口</button>
+            <button id="openQQMailBtn" type="button">打开 QQ 邮箱</button>
+          </div>
+        </div>
+        <p class="hint">这里集中放置排障和迁移工具：恢复全局轮询、重置停止账号、立即轮询、复制自检报告、打开状态接口。</p>
+        <div id="diagnosticsBox" class="diagnostics-box">点击“复制自检报告”可生成当前后端状态和排查建议。</div>
+      </section>
+
+      <section class="card">
+        <div class="section-title-row">
+          <h2>完整后端备份 / 恢复</h2>
+          <div class="button-row compact-row">
+            <button id="exportBackupBtn" type="button">导出完整备份</button>
+            <button id="importBackupBtn" type="button">导入完整备份</button>
+          </div>
+        </div>
+        <input id="importBackupInput" type="file" accept="application/json,.json" hidden />
+        <p class="hint warning-hint">完整备份会包含 config、accounts、ignored-mails，其中 accounts 含 QQ 邮箱授权码。请只保存在自己的可信设备上。</p>
+      </section>
+
+      <section class="card">
+        <h2>建议的日常使用流程</h2>
+        <ul>
+          <li>账号异常：先到“运行日志”看错误，再到“账号管理”测试账号。</li>
+          <li>修复授权码后：点“一键修复并轮询”，不用逐个重置。</li>
+          <li>换电脑迁移：使用“导出完整备份 / 导入完整备份”。</li>
+          <li>界面不适合当前环境：右上角切换后端 GUI 主题、字体和密度。</li>
+        </ul>
+      </section>
+    </section>
+
+    <section id="tab-tray" class="tab-page">
+      <section class="card">
+        <h2>Windows 托盘程序</h2>
+        <p>v2.1 新增 Electron 托盘模式。托盘程序启动后会在系统托盘显示图标，右键可打开后端设置、查看状态、重启后端或退出。</p>
+        <div class="two-col">
+          <div class="form-block">
+            <h2>开发/自用运行</h2>
+            <ol>
+              <li>进入 <code>backend</code> 文件夹。</li>
+              <li>运行 <code>start-tray-windows.bat</code>。</li>
+              <li>或者命令行运行 <code>npm install && npm run tray</code>。</li>
+            </ol>
+          </div>
+          <div class="form-block">
+            <h2>打包托盘 EXE</h2>
+            <ol>
+              <li>在 Windows 上进入 <code>backend</code> 文件夹。</li>
+              <li>运行 <code>build-windows-tray.bat</code>。</li>
+              <li>生成 <code>dist\QQ邮箱提醒托盘版-2.9.0.exe</code> 后双击运行。</li>
+            </ol>
+          </div>
+        </div>
+        <p class="hint">当前沙盒不是 Windows，无法实际生成并验证 Windows 托盘 exe；项目已包含 Electron 托盘入口和构建脚本，你在 Windows 上运行脚本即可构建。</p>
+      </section>
+    </section>
+
+    <section class="card">
+      <h2>说明</h2>
+      <ul>
+        <li>保存账号前可以点击“测试”验证邮箱和授权码是否能连接 QQ IMAP。</li>
+        <li>导入/导出用于换电脑迁移；导出文件包含授权码，请勿分享。</li>
+        <li>本地忽略不会把服务器邮件标为已读，只影响本工具显示。</li>
+      </ul>
+      <p id="message" class="message"></p>
+    </section>
+  </main>
+  <script src="admin.js"></script>
+</body>
+</html>
