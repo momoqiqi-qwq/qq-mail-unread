@@ -37,19 +37,19 @@ const importBackupInput = $('importBackupInput');
 let accountsDraft = [];
 let activeTestButtons = new Set();
 
-const ADMIN_UI_KEY = 'qqMailBackendAdminUiV29';
+const ADMIN_UI_PREFS_KEY = 'qqMailAdminUiPrefs';
 const ADMIN_UI_DEFAULT = { theme: 'default-blue', fontSize: 'normal', density: 'normal' };
 
 function loadAdminUiPrefs() {
   try {
-    return { ...ADMIN_UI_DEFAULT, ...(JSON.parse(localStorage.getItem(ADMIN_UI_KEY) || '{}') || {}) };
+    return { ...ADMIN_UI_DEFAULT, ...(JSON.parse(localStorage.getItem(ADMIN_UI_PREFS_KEY) || '{}') || {}) };
   } catch (_) {
     return { ...ADMIN_UI_DEFAULT };
   }
 }
 
 function saveAdminUiPrefs(prefs) {
-  localStorage.setItem(ADMIN_UI_KEY, JSON.stringify({ ...ADMIN_UI_DEFAULT, ...prefs }));
+  localStorage.setItem(ADMIN_UI_PREFS_KEY, JSON.stringify({ ...ADMIN_UI_DEFAULT, ...prefs }));
 }
 
 function applyAdminUiPrefs() {
