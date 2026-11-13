@@ -1,3 +1,27 @@
+<div align="center">
+
+<img src="./assets/readme-hero.svg" alt="qq-mail-unread" width="1000" />
+
+**QQ邮箱多账号未读提醒 - 本地后端 + Chrome扩展**
+
+[![stars](https://img.shields.io/github/stars/momoqiqi-qwq/qq-mail-unread?style=for-the-badge&color=f5c518&labelColor=2b2b2b)](https://github.com/momoqiqi-qwq/qq-mail-unread/stargazers) ![JavaScript](https://img.shields.io/badge/JavaScript-E8B40C?style=for-the-badge&logo=javascript&logoColor=white)
+
+</div>
+
+<details>
+<summary><b>目录</b></summary>
+
+- [✨ 项目简介](#项目简介)
+- [🎨 主要特点](#主要特点)
+- [📦 包含模块](#包含模块)
+- [🛠️ 如何使用](#如何使用)
+- [❓ 效果演示](#效果演示)
+- [🙏 贡献](#贡献)
+
+</details>
+
+---
+
 # 📬 QQ 邮箱多账号未读提醒
 
 ### ✨ 项目简介
